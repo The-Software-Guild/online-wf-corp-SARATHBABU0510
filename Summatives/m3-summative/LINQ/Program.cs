@@ -116,7 +116,7 @@ namespace LINQ
         static void PrintAllOutofStockProducts()
         {
             List<Product> products = DataLoader.LoadProducts();
-            List<Product> outofstockproducts = products.Where(p => p.UnitsInStock == 0).ToList();            
+            List<Product> outofstockproducts = products.Where(p => p.UnitsInStock == 0).ToList();
             PrintProductInformation(outofstockproducts);
         }
 
@@ -200,7 +200,7 @@ namespace LINQ
             });
             foreach (var product in productnametype)
             {
-                Console.WriteLine(line, product.ProductName,product.Category);
+                Console.WriteLine(line, product.ProductName, product.Category);
             }
         }
 
@@ -230,7 +230,7 @@ namespace LINQ
             foreach (var product in anonproducts)
             {
                 Console.WriteLine(line, product.ProductID, product.ProductName, product.Category,
-                    product.UnitPrice, product.UnitsInStock,product.Reorder);
+                    product.UnitPrice, product.UnitsInStock, product.Reorder);
             }
         }
 
@@ -248,7 +248,7 @@ namespace LINQ
                 Category = p.Category,
                 UnitPrice = p.UnitPrice,
                 UnitsInStock = p.UnitsInStock,
-                StockValue = Math.Round(p.UnitPrice*p.UnitsInStock,2)
+                StockValue = Math.Round(p.UnitPrice * p.UnitsInStock, 2)
             }).ToList();
 
             string line = "{0,-5} {1,-35} {2,-15} {3,6:c} {4,6} {5,10}";
@@ -275,7 +275,7 @@ namespace LINQ
 
             foreach (var number in evennumbers)
             {
-                Console.WriteLine(line, number); 
+                Console.WriteLine(line, number);
             }
         }
 
@@ -306,7 +306,7 @@ namespace LINQ
                 {
                     Console.WriteLine(line, odd3nnumbers[i]);
                 }
-            }            
+            }
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace LINQ
             Console.WriteLine(line, "All(but first 3) Numbers");
             Console.WriteLine("========================");
 
-            for (int i = 3; i <= DataLoader.NumbersB.Length-1; i++)
+            for (int i = 3; i <= DataLoader.NumbersB.Length - 1; i++)
             {
                 Console.WriteLine(line, DataLoader.NumbersB[i]);
             }
@@ -358,12 +358,9 @@ namespace LINQ
             Console.WriteLine(line, "First Numbers Less than 6");
             Console.WriteLine("=========================");
 
-            foreach (var number in DataLoader.NumbersC)
+            var Numberslessthan6 = DataLoader.NumbersC.TakeWhile(n => n < 6);
+            foreach (var number in Numberslessthan6)
             {
-                if (number >= 6)
-                {
-                    return;
-                }
                 Console.WriteLine(line, number);
             }
         }
@@ -377,17 +374,10 @@ namespace LINQ
             Console.WriteLine(line, "Numbers after first divisible by 3");
             Console.WriteLine("==================================");
 
-            bool printnext = false;
-            foreach (var number in DataLoader.NumbersC)
+            var NumbersAfternumberDivisbleby3 = DataLoader.NumbersC.SkipWhile(n => n % 3 != 0).Skip(1);
+            foreach (var number in NumbersAfternumberDivisbleby3)
             {
-                if (printnext)
-                {
-                    Console.WriteLine(line, number);
-                }
-                if (number % 3 == 0 && printnext == false)
-                {
-                    printnext = true;
-                }
+                Console.WriteLine(line, number);
             }
         }
 
@@ -485,27 +475,51 @@ namespace LINQ
         static void PrintCustomersOrderYearMonth()
         {
             var customers = DataLoader.LoadCustomers();
-            var customerssortbyorder = from customer in customers
-                                       where customer.Orders.Any() is true
-                                       select new
-                                       {
-                                           CompanyName = customer.CompanyName,
-                                           Orders = customer.Orders.OrderBy(order => order.OrderDate)
-                                       };
+            var customerssortbyNameandorder = from customer in customers
+                                              where customer.Orders.Any() is true
+                                              orderby customer.CompanyName
+                                              group customer by customer.CompanyName into customerCompanyName
+                                              from customer1 in
+                                                    (from customerC in customerCompanyName
+                                                     from order in customerC.Orders
+                                                     where customerC.CompanyName == customerCompanyName.Key
+                                                     orderby order.OrderDate.Year
+                                                     group customerC by order.OrderDate.Year into customerYear
+                                                     from customer2 in
+                                                            (from customerY in customerYear
+                                                             from order in customerY.Orders
+                                                             where customerY.CompanyName == customerCompanyName.Key && 
+                                                                   order.OrderDate.Year == customerYear.Key 
+                                                             orderby order.OrderDate.Month
+                                                             group customerY by order.OrderDate.Month
+                                                             into customerMonth
+                                                             select new
+                                                             {
+                                                                 month = customerMonth.Key,
+                                                                 monthlyordertotals =
+                                                                              (from customerM in customers
+                                                                               from order in customerM.Orders
+                                                                               where customerM.CompanyName == customerCompanyName.Key &&
+                                                                                     order.OrderDate.Year  == customerYear.Key        &&
+                                                                                     order.OrderDate.Month == customerMonth.Key 
+                                                                               select order.Total).ToList().Sum() 
+                                                             })
+                                                     group customer2 by customerYear.Key)
+                                              group customer1 by customerCompanyName.Key;
 
-            foreach (var customer in customerssortbyorder)
-            {   
+            foreach (var customerCompanyName in customerssortbyNameandorder)
+            {
                 Console.WriteLine("==============================================================================");
-                Console.WriteLine(customer.CompanyName);
-                Console.WriteLine();
-                Console.WriteLine("\tOrders");
-                foreach (var order in customer.Orders)
+                Console.WriteLine(customerCompanyName.Key);
+                Console.WriteLine("\tOrders Totals Grouped by Year and then Month");
+                foreach (var customerYear in customerCompanyName)
                 {
-                    Console.WriteLine("\t{0}", order.OrderDate.Year);
-                    Console.WriteLine("\t{0} - {1,10:c}", order.OrderDate.Month, order.Total);                        
+                    Console.WriteLine(customerYear.Key);
+                    foreach (var customermonth in customerYear)
+                    {
+                        Console.WriteLine("\t{0} - {1,10:c}", customermonth.month, customermonth.monthlyordertotals);
+                    }
                 }
-                Console.WriteLine("==============================================================================");
-                Console.WriteLine();
             }
         }
 
@@ -521,7 +535,7 @@ namespace LINQ
             string line = "{0,-15}";
             Console.WriteLine(line, "Category");
             Console.WriteLine("==============");
-                        
+
             foreach (var product in uniquecategories)
             {
                 Console.WriteLine(line, product.Key);
@@ -535,8 +549,8 @@ namespace LINQ
         {
             List<Product> products = DataLoader.LoadProducts();
             var productexists = (from product in products
-                                where product.ProductID == 789
-                                select product).Any();
+                                 where product.ProductID == 789
+                                 select product).Any();
             if (productexists)
             {
                 Console.WriteLine("Product {0} exists", 789);
@@ -573,7 +587,7 @@ namespace LINQ
         static void PrintCategorieswithnooutofstockproducts()
         {
             List<Product> products = DataLoader.LoadProducts();
-            var instockproducts =  (from product in products
+            var instockproducts = (from product in products
                                    where product.UnitsInStock > 0
                                    group product by product.Category);
 
@@ -584,9 +598,9 @@ namespace LINQ
             foreach (var category in instockproducts)
             {
                 var outofproductexists = (from product in products
-                                     where product.UnitsInStock == 0 && product.Category == category.Key
-                                     select product).Any();
-                if(!outofproductexists)
+                                          where product.UnitsInStock == 0 && product.Category == category.Key
+                                          select product).Any();
+                if (!outofproductexists)
                 {
                     Console.WriteLine(line, category.Key);
                 }
@@ -637,7 +651,7 @@ namespace LINQ
         {
             List<Product> products = DataLoader.LoadProducts();
             var productscategories = (from product in products
-                                     group product by product.Category);
+                                      group product by product.Category);
 
             string line = "{0,-15} {1,-3}";
             Console.WriteLine(line, "Category", "Products Count");
@@ -645,7 +659,7 @@ namespace LINQ
 
             foreach (var category in productscategories)
             {
-                Console.WriteLine(line, category.Key,category.Count());
+                Console.WriteLine(line, category.Key, category.Count());
             }
         }
 
@@ -678,28 +692,24 @@ namespace LINQ
         {
             List<Product> products = DataLoader.LoadProducts();
             var productscategories = (from product in products
-                                      group product by product.Category);            
+                                      orderby product.UnitPrice
+                                      group product by product.Category into tempproducts
+                                      select new
+                                      {
+                                          Category = tempproducts.Key,
+                                          ProductName = tempproducts.First().ProductName
+                                      });
 
-            foreach (var category in productscategories)
+            string line = "{0,-15} {1,-35}";
+            Console.WriteLine(line, "Category", "ProductName");
+            Console.WriteLine("=======================================");
+            foreach (var product in productscategories)
             {
-                string line = "{0,-15}";
-                Console.WriteLine(line, "Category");
-                Console.WriteLine("=======================================");
 
-                var UnitPriceList = (from product in products
-                                    where product.Category == category.Key
-                                   select product.UnitPrice);
-                var ProductNameList = (from product in products
-                                   where (product.Category == category.Key && product.UnitPrice == UnitPriceList.Min())
-                                   select product.ProductName);
-                Console.WriteLine(line, category.Key);
-                Console.WriteLine("\tLowest Priced Products");
-                foreach (var ProductName in ProductNameList)
-                {
-                    Console.WriteLine("\t{0}", ProductName);
-                }
-                Console.WriteLine("=======================================");
+                Console.WriteLine(line, product.Category, product.ProductName);
+
             }
+            Console.WriteLine("=======================================");
         }
 
         /// <summary>
@@ -724,7 +734,7 @@ namespace LINQ
             Console.WriteLine("==============");
 
             foreach (var product in productscategoriessort)
-            {   
+            {
                 Console.WriteLine(line, product.Category);
             }
         }
