@@ -9,7 +9,7 @@ namespace SGBank.Data
 {
     public class FileAccountRepository : IAccountRepository
     {
-        private static string path = @"C:\Repos\SGBank\SGBank.UI\bin\Debug\Accounts.txt";
+        private static string path = "Accounts.txt";
         private static List<Account> _accountList = new List<Account>();
         private static string header = null;
 
