@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vending Machine</title>
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.css"
+              rel="stylesheet">
+            <style>                
+                .square {
+                    height: 175px;
+                    width: 175px;                  
+                    margin:15px;  
+                    position: relative;
+                    border-style: solid;
+                }
+                .content {
+                    position: absolute;
+                    height:90%;
+                    width:80%;
+                    padding:5%;
+                    margin:0px 15px 30px 15px;
+                    text-align: center;
+                }
+                .form-horizontal {
+                    height: 150px;
+                    width: 250px;                  
+                    margin: 8%;  
+                    padding:0% 4%;
+                    position: relative; 
+                }
+                .form-group {
+                    display: inline-block;
+                    text-align: center;
+                }
+                hr {
+                    display: block;
+                    height: 1px;
+                    border:0;
+                    border-bottom: 2px solid;
+                    margin: 1em 0;
+                    padding: 0;
+                }
+                .btn-default {
+                    display: inline-block;
+                    text-align: center;
+                    width: 95px;                
+                }
+            </style>
+            <noscript>
+                For full functionality of this site it is necessary to enable JavaScript.
+                Here are the <a href="https://www.enable-javascript.com/">
+                instructions on how to enable JavaScript in your web browser</a>.
+            </noscript>      
+    </head>
+    <body>       
+            <div class="container">
+                <h1 align="center">Vending Machine</h1>
+                <hr/>               
+                <ul align="center" class="list-group" id="errorMessages"/>
+                <!--
+                Add a row to our container - this will hold the item(s) section and the vending machine control section.
+                -->
+                <div class="row justify-content-center" id="bodycontent">
+                        <!-- item(s) section -->                        
+                        <div class="col-md-8"  align="center">                            
+                            <div id="contactTableDiv">
+                                <table>
+                                  <tr>
+                                      <td>
+                                        <div id="square1" class="square">
+                                            <table class="content">
+                                                <tbody id="item1"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square2" class="square">
+                                            <table class="content">  
+                                                <tbody id="item2"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square3" class="square">
+                                            <table class="content">      
+                                                <tbody id="item3"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                        <div id="square4" class="square">
+                                            <table class="content">                                                
+                                                <tbody id="item4"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square5" class="square">
+                                            <table class="content"> 
+                                                <tbody id="item5"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square6" class="square">
+                                            <table class="content">
+                                                <tbody id="item6"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td>
+                                        <div id="square7" class="square">
+                                            <table class="content">
+                                                <tbody id="item7"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square8" class="square">
+                                            <table class="content">
+                                                <tbody id="item8"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div id="square9" class="square">
+                                            <table class="content">
+                                                <tbody id="item9"></tbody>
+                                            </table>                                            
+                                        </div>
+                                      </td>
+                                  </tr>
+                                </table>
+                            </div>                            
+                        </div>  
+                        
+                        <!--
+                        vending machine control section
+                        -->
+                        <div class="col-md-4" align="left">
+                            <div id="vendingmachinecontrolDiv">
+                                <form class="form-horizontal" role="form" id="total-form">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3  col-md-9">
+                                            <label>Total $ In</label>
+                                            <input style="text-align:center;" type="number"  class="form-control" id="total-in" placeholder="" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3 col-md-4 col-md-offset-1">
+                                            <button type="button" id="add-dollar" class="btn btn-default">Add Dollar</button>
+                                        </div>
+                                        <div class="col-md-3 col-md-offset-1">
+                                            <button type="button"  id="add-quarter" class="btn btn-default">Add Quarter</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3 col-md-4 col-md-offset-1">
+                                            <button type="button" id="add-dime" class="btn btn-default">Add Dime</button>
+                                        </div>
+                                        <div class="col-md-3 col-md-offset-1">
+                                            <button type="button" id="add-nickel" class="btn btn-default">Add Nickel</button>
+                                        </div>
+                                    </div>                            
+                                </form>
+                                <hr/>
+                                
+                                <form class="form-horizontal" role="form" id="messages-form">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2  col-md-9">
+                                            <label>Messages</label>            
+                                        </div>
+                                        <div class="col-md-offset-1  col-md-9">
+                                            <input style="text-align:center;width:200px" type="text" class="form-control" id="messages" placeholder="" readonly/>
+                                        </div>
+                                    </div>    
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2  col-md-10">
+                                            <label for="item" class="col-md-offset-1 col-md-3 control-label">Item:</label>
+                                            <div class="col-md-7">
+                                                <input style="text-align:center;" type="text" class="form-control" id="item" placeholder=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3  col-md-9">
+                                            <button type="button" id="makepurchase" class="btn btn-default" style="width:160px">Make Purchase</button>
+                                        </div> 
+                                    </div>                                             
+                                </form>
+                                <hr/>
+
+                                <form class="form-horizontal" role="form" id="change-form">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-1  col-md-9">
+                                            <label>Change</label>                                            
+                                        </div> 
+                                        <div class="col-md-9">
+                                            <input style="text-align:center;width:250px" type="text" class="form-control" id="change" placeholder="" readonly/>    
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-3  col-md-9">
+                                            <button type="button" id="changereturn" class="btn btn-default" style="width:160px">Change Return</button>
+                                        </div> 
+                                    </div>                                             
+                                </form>
+                            </div>
+                        </div>                  
+                        <!-- End col div -->
+                </div>
+                <!-- End row div -->
+            </div>
+            <div id="endinghrule">
+                <hr/>
+            </div>
+            <!-- #5: Placed at the end of the document so the pages load faster -->
+            <script src="js/jquery-2.2.4.min.js"></script>
+            <script src="js/bootstrap.js"></script>
+            <script src="js/vendingMachine.js"></script>
+    </body>
+</html>
+        
