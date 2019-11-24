@@ -1,0 +1,105 @@
+﻿@model Exercises.Models.ViewModels.StudentVM
+
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-3">
+        @Html.Partial("StudentNav")
+    </div>
+    <div class="col-xs-12 col-sm-9">
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>Edit Student</h3>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-5">
+                        @using (Html.BeginForm("EditPersonal", "Student", FormMethod.Post))
+                        {
+                            @Html.ValidationSummary(true)
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Personal Details</h4>
+                                </div>
+                                <div class="panel-body">
+                                    @Html.HiddenFor(m => m.PersonalDetailsVM.StudentId)
+                                    <div class="form-group">
+                                        <label>First Name:</label>
+                                        @Html.TextBoxFor(m => m.PersonalDetailsVM.FirstName, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PersonalDetailsVM.FirstName)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name:</label>
+                                        @Html.TextBoxFor(m => m.PersonalDetailsVM.LastName, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PersonalDetailsVM.LastName)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Major:</label>
+                                        @Html.DropDownListFor(m => m.PersonalDetailsVM.MajorId, Model.PersonalDetailsVM.MajorItems, "-Choose One-", new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PersonalDetailsVM.MajorId)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>GPA:</label>
+                                        @Html.TextBoxFor(m => m.PersonalDetailsVM.GPA, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PersonalDetailsVM.GPA)</span>
+                                    </div>
+                                    <h4>Courses</h4>
+                                    <div class="form-group">
+                                        @Html.ListBoxFor(m => m.PersonalDetailsVM.SelectedCourseIds, Model.PersonalDetailsVM.CourseItems, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PersonalDetailsVM.SelectedCourseIds)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Save" class="btn btn-primary" name="Personal" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-xs-12 col-sm-5">
+                        @using (Html.BeginForm("EditAddress", "Student", FormMethod.Post))
+                        {
+                            @Html.ValidationSummary(true)
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Address Details</h4>
+                                </div>
+                                <div class="panel-body">
+                                    @Html.HiddenFor(m => m.AddressDetailsVM.StudentId)
+                                    <div class="form-group">
+                                        <label>Street1:</label>
+                                        @Html.TextBoxFor(m => m.AddressDetailsVM.Address.Street1, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.AddressDetailsVM.Address.Street1)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Street2:</label>
+                                        @Html.TextBoxFor(m => m.AddressDetailsVM.Address.Street2, new { @class = "form-control" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.AddressDetailsVM.Address.Street2)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>City:</label>
+                                        @Html.TextBoxFor(m => m.AddressDetailsVM.Address.City, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.AddressDetailsVM.Address.City)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>State:</label>
+                                        @Html.DropDownListFor(m => m.AddressDetailsVM.Address.State.StateAbbreviation, Model.AddressDetailsVM.StateItems, "-Choose One-", new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.AddressDetailsVM.Address.State.StateAbbreviation)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>PostalCode:</label>
+                                        @Html.TextBoxFor(m => m.AddressDetailsVM.Address.PostalCode, new { @class = "form-control", required="required" })
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.AddressDetailsVM.Address.PostalCode)</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Save" class="btn btn-primary" name="Address" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
